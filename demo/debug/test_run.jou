@@ -1,0 +1,134 @@
+;fluent 3ddp -t6 -g -i test_run.jou > test_run.log 2>&1 &
+;
+;=======================================================================
+;Change working directory to case loading path
+;chdir C:\Users\Li Hang\Desktop\fluent_case_test
+/file/cff-files n
+/preferences/general/automatic-transcript n
+/preferences/general/default-ioformat "Legacy"
+;
+;=======================================================================
+;Read case and data file C:\path with space\example.cas
+;/file/read-journal case_run_test.jou ""
+;/define/user-defined/use-built-in-compiler y
+/file/read-case test.cas
+/file/read-data test.dat
+;
+;=======================================================================
+;Model general setting
+/define/models/steady
+/define/models/solver/pressure-based y
+;
+;=======================================================================
+;UDM Setting
+/define/user-defined/user-define-memory 12
+;
+;=======================================================================
+;UDF file compiling and loading
+/define/user-defined/use-built-in-compiler y
+/define/user-defined/compiled-functions unload libudf
+/define/user-defined/compiled-functions compile libudf y adm_test.c inflow_test.c "" ""
+/define/user-defined/compiled-functions load libudf
+;
+;=======================================================================
+;Use the Reynolds Stress Model
+/define/models/viscous/reynolds-stress-model y
+;
+;=======================================================================
+;Fluid source term adding XYZ Momentum/TKE/TDR
+/define/boundary-conditions/fluid flow n y 0 1 n y x_source::libudf 1 n y y_source::libudf 1 n y z_source::libudf 1 n y k_source::libudf 1 n y w_source::libudf 0 0 0 0 0 0 n n n 0 n 0 n 0 n 0 n 0 n 1 n n n n n
+;
+;=======================================================================
+;Boundary conditions for velocity inlet velocity/TKE/TDR
+/define/boundary-conditions/velocity-inlet inlet n n y y y y udf inlet_velocity::libudf n 0 y y y udf k_profile::libudf y y udf w_profile::libudf y
+;
+;=======================================================================
+;Boundary conditions for outlet
+/define/boundary-conditions/outflow outlet 1
+;
+;=======================================================================
+;Boundary conditions for wall ground Roughness height/constant
+/define/boundary-conditions/wall ground n n n 3e-05 n 0.5
+;
+;=======================================================================
+;Solution method setting
+/solve/set/p-v-coupling 20
+;
+;=======================================================================
+;Calculation monitors and convergence conditions
+/solve/monitors/residual/criterion-type 0
+/solve/monitors/residual/convergence-criteria 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001 0.00001
+;
+;=======================================================================
+;Saving Setting
+/file/confirm-overwrite y
+/file/auto-save/retain-most-recent-files y
+/file/auto-save/case-frequency if-case-is-modified
+/file/auto-save/data-frequency 0
+;
+;=======================================================================
+;Initialize the solution
+;/solve/initialize/init-flow-statistics
+;/solve/initialize/compute-defaults/all-zones
+;/solve/initialize/compute-defaults/velocity-inlet inlet
+/solve/initialize/initialize-flow y
+/solve/initialize/hyb-initialization y
+;
+;=======================================================================
+;Starting a solve process with a number of iteration steps:
+/solve/iterate 1000
+;
+;=======================================================================
+;Export residuals plotted line
+;/display/save-picture residuals.png
+;
+;=======================================================================
+;Define surface line for wake plotting
+/surface/line-surface vpe_in -0.90 0 0 -0.90 0 0.46
+/surface/line-surface vpe_1d -0.75 0 0 -0.75 0 0.46
+/surface/line-surface vpe_3d -0.45 0 0 -0.45 0 0.46
+/surface/line-surface vpe_5d -0.15 0 0 -0.15 0 0.46
+/surface/line-surface vpi_1d 0.15 0 0 0.15 0 0.46
+/surface/line-surface vpi_3d 0.45 0 0 0.45 0 0.46
+/surface/line-surface vpi_6d 0.90 0 0 0.90 0 0.46
+/surface/line-surface vpi_9d 1.35 0 0 1.35 0 0.46
+/surface/line-surface vpi_12d 1.80 0 0 1.80 0 0.46
+/surface/line-surface vpi_15d 2.25 0 0 2.25 0 0.46
+/surface/line-surface vpi_20d 3.00 0 0 3.00 0 0.46
+/surface/line-surface vpe_out 3.42 0 0 3.42 0 0.46
+/surface/plane-surface vp_zx_mid zx-plane 0
+/surface/plane-surface hp_xy_hub xy-plane 0.125
+;
+;=======================================================================
+;Export vertical and horizontal surface for results check
+/display/set/contours/auto-range y
+/display/set/contours/coloring n
+/display/set/contours/filled-contours y
+/display/objects/create contour vertical-vel field x-velocity surface-list vp_zx_mid () node-values y filled y contour-lines n ()
+;/display/objects/display vertical-vel
+/display/objects/create contour vertical-turb field turb-intensity surface-list vp_zx_mid () node-values y filled y contour-lines n ()
+;/display/objects/display vertical-turb
+/display/objects/create contour horizontal-vel field x-velocity surface-list hp_xy_hub () node-values y filled y contour-lines n ()
+;/display/objects/display horizontal-vel
+/display/objects/create contour horizontal-turb field turb-intensity surface-list hp_xy_hub () node-values y filled y contour-lines n ()
+;/display/objects/display horizontal-turb
+;
+;=======================================================================
+;Export wake profile data at different distances
+;/file/export/ascii vpi_3d.txt vpi_3d () y x-velocity y-velocity z-velocity turb-intensity () n ok
+;/file/export/ascii vpi_6d.txt vpi_6d () y x-velocity y-velocity z-velocity turb-intensity () n ok
+;/file/export/ascii vpi_9d.txt vpi_9d () y x-velocity y-velocity z-velocity turb-intensity () n ok
+;
+;=======================================================================
+;Export wake flow data at all nodes
+/file/export/ascii flow_data.txt () y x-velocity y-velocity z-velocity turb-intensity () n ok
+;
+;=======================================================================
+;Write the final case file and data file (overwriting if required)
+;/file/write-data test.dat ok
+;/file/write-case test.cas ok
+/file/write-case-data test_run.cas ok
+;
+;Exiting Fluent
+;============================ Calculation Done! =============================
+/exit ok

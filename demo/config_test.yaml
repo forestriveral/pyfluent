@@ -1,0 +1,162 @@
+
+name: Wake Simulation Automator Script configuration
+description: Single wake fluent simulation test by pyfluent script
+configuration_version: v0.1.0
+
+work_dir: C:/Users/Li Hang/Documents/Projects/pyfluent/demo
+
+general:
+  start: case
+  case:
+    name: test
+    path: ./
+  mesh:
+    name: test_eq
+    script: test_mesh.rpl
+    path: ./mesh
+    from_script: False
+  run:
+    solution: 1
+    create: 1
+    plot: 1
+    export: 1
+  log:
+    enable: False
+    name: run_log
+    folder: ./log
+  field:
+    value:
+      - x-velocity
+      - y-velocity
+      - z-velocity
+      - turb-intensity
+      - turb-kinetic-energy
+  exit_at_end: False
+  clear_log_file: True
+
+udf_file:
+  inflow:
+    enable: True
+    name: inflow_test.c
+  turbine:
+    enable: False
+    name : adm_test.c
+  path: ./
+
+turbine:
+  number: 1
+  unit: m
+  diameter: 0.15
+  hub_height: 0.125
+
+mesh:
+  domain_scheme:
+    length:
+      x: 6.4
+      y: 0.8
+      z: 0.4
+    axis:
+      x:
+        min: -3.2
+        max: 3.2
+      y:
+        min: -0.4
+        max: 0.4
+      z:
+        min: 0.0
+        max: 0.4
+    grid:
+      N_x: 140
+      N_y: 45
+      N_z: 35
+      boundary_layer:
+        enable: True
+        number: 15
+        len_ratio: 0.2
+        min_len: 0.002
+        ratio_1: 1.01
+        ratio_2: 1.01
+      max_len: 0.02
+      tolerance: 0.0001
+  boundary_condition :
+    flow_name: wind
+    inlet_name: inlet
+    outlet_name: outlet
+    ground_name: ground
+    boundary_name: boundary
+    # side_name: side
+    # top_name: top
+
+solution:
+  convge_tol: 1e-6
+  report_interval: 50
+  iteration: 1000
+
+surface:
+  plane:
+    enable: True
+    xy_plane:
+      - hub
+    xz_plane:
+      - hub
+    yz_plane: [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    screen_shot:
+      enable: True
+  line:
+    enable: True
+    y_axis:
+      x: [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+      z:
+        - hub
+    z_axis:
+      x: [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+      y:
+        - hub
+    screen_shot:
+      enable: True
+  plot:
+    reset: True
+    enable: True
+    contour_name:
+      - xy_hub_vel
+      - xy_hub_turb
+      - xz_hub_vel
+      - xz_hub_turb
+    profile_name:
+      - y_hub_vel
+      - y_hub_turb
+      - z_hub_vel
+      - z_hub_turb
+
+output:
+  image:
+    folder: ./image
+    residual:
+      enable: True
+      name: run_residual
+  data:
+    folder: ./data
+    ascii:
+      enable: False
+      name:
+        - xy_hub_field
+        - xz_hub_field
+        - yz_hub_field
+        - y_hub_profile
+        - z_hub_profile
+    tecplot:
+      enable: True
+      name: wake_flow
+    field:
+      enable: True
+      name: wake_data
+  case:
+    enable: False
+    name: run_test
+
+
+
+
+
+
+

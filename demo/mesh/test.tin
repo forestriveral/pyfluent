@@ -1,0 +1,273 @@
+// tetin file version 1.1
+// written by ICEM CFD - version 21.1 on Sun Dec 10 21:59:51 2023
+
+set_triangulation_tolerance 0.001
+# In ICEM CFD 4.2 the family_boco file is no longer tied to tetin
+# read_family_boco family_boco
+define_family GEOM color 16663866
+define_family INLET color 16663101
+define_family OUTLET color 3387852
+define_family GROUND color 16661826
+define_family BOUNDARY color 10214707
+define_family WIND color 7746546
+
+prescribed_point -3.2 -0.4 0.08 family GEOM name pnt.08
+prescribed_point -3.2 -0.4 0 family GEOM name pnt.01
+prescribed_point 3.2 -0.4 0 family GEOM name pnt.02
+prescribed_point 3.2 -0.4 0.4 family GEOM name pnt.06
+prescribed_point -3.2 -0.4 0.4 family GEOM name pnt.05
+prescribed_point -3.2 0.4 0 family GEOM name pnt.00
+prescribed_point 3.2 0.4 0 family GEOM name pnt.03
+prescribed_point 3.2 0.4 0.4 family GEOM name pnt.07
+prescribed_point -3.2 0.4 0.4 family GEOM name pnt.04
+define_curve family GEOM tetra_size 1e+10 name srf.03e0 vertex1 pnt.00 vertex2 pnt.01
+bspline
+2,2,0
+0,0,1,1
+-3.2,0.4,0
+-3.2,-0.4,0
+define_curve family GEOM tetra_size 1e+10 name srf.03e1 vertex1 pnt.01 vertex2 pnt.02
+bspline
+2,2,0
+0,0,1,1
+-3.2,-0.4,0
+3.2,-0.4,0
+define_curve family GEOM tetra_size 1e+10 name srf.03e2 vertex1 pnt.02 vertex2 pnt.03
+bspline
+2,2,0
+-1,-1,-0,-0
+3.2,-0.4,0
+3.2,0.4,0
+define_curve family GEOM tetra_size 1e+10 name srf.03e3 vertex1 pnt.03 vertex2 pnt.00
+bspline
+2,2,0
+-1,-1,-0,-0
+3.2,0.4,0
+-3.2,0.4,0
+define_curve family GEOM tetra_size 1e+10 name srf.04e4 vertex1 pnt.04 vertex2 pnt.05
+bspline
+2,2,0
+0,0,1,1
+-3.2,0.4,0.4
+-3.2,-0.4,0.4
+define_curve family GEOM tetra_size 1e+10 name srf.04e5 vertex1 pnt.05 vertex2 pnt.06
+bspline
+2,2,0
+0,0,1,1
+-3.2,-0.4,0.4
+3.2,-0.4,0.4
+define_curve family GEOM tetra_size 1e+10 name srf.04e6 vertex1 pnt.06 vertex2 pnt.07
+bspline
+2,2,0
+-1,-1,-0,-0
+3.2,-0.4,0.4
+3.2,0.4,0.4
+define_curve family GEOM tetra_size 1e+10 name srf.04e7 vertex1 pnt.07 vertex2 pnt.04
+bspline
+2,2,0
+-1,-1,-0,-0
+3.2,0.4,0.4
+-3.2,0.4,0.4
+define_curve family GEOM tetra_size 1e+10 name srf.05e9 vertex1 pnt.02 vertex2 pnt.06
+bspline
+2,2,0
+0,0,1,1
+3.2,-0.4,0
+3.2,-0.4,0.4
+define_curve family GEOM tetra_size 1e+10 name srf.06e13 vertex1 pnt.03 vertex2 pnt.07
+bspline
+2,2,0
+0,0,1,1
+3.2,0.4,0
+3.2,0.4,0.4
+define_curve family GEOM tetra_size 1e+10 name srf.06e15 vertex1 pnt.04 vertex2 pnt.00
+bspline
+2,2,0
+-1,-1,-0,-0
+-3.2,0.4,0.4
+-3.2,0.4,0
+define_curve family GEOM tetra_size 1e+10 name srf.05e11.2 vertex1 pnt.05 vertex2 pnt.08
+bspline
+2,2,0
+-1,-1,-0.20000000298023,-0.20000000298023
+-3.2,-0.4,0.4
+-3.2,-0.4,0.080000001192093
+define_curve family GEOM tetra_size 1e+10 name srf.05e11.3 vertex1 pnt.08 vertex2 pnt.01
+bspline
+2,2,0
+-0.20000000298023,-0.20000000298023,-0,-0
+-3.2,-0.4,0.080000001192093
+-3.2,-0.4,0
+define_surface name srf.03 family GROUND tetra_size 1e+10
+trim_surface n_loops 1
+loop n_curves 4
+coedge 3dcurve   srf.03e0
+polyline n_points 2
+0,0
+1,0
+coedge 3dcurve   srf.03e1
+polyline n_points 2
+1,0
+1,1
+coedge 3dcurve   srf.03e2
+polyline n_points 2
+1,1
+0,1
+coedge 3dcurve   srf.03e3
+polyline n_points 2
+0,1
+0,0
+bspline
+2,2,2,2,0
+0,0,1,1
+0,0,1,1
+-3.2,0.4,0
+-3.2,-0.4,0
+3.2,0.4,0
+3.2,-0.4,0
+define_surface name srf.04 family BOUNDARY tetra_size 1e+10
+trim_surface n_loops 1
+loop n_curves 4
+coedge 3dcurve   srf.04e4
+polyline n_points 2
+0,0
+1,0
+coedge 3dcurve   srf.04e5
+polyline n_points 2
+1,0
+1,1
+coedge 3dcurve   srf.04e6
+polyline n_points 2
+1,1
+0,1
+coedge 3dcurve   srf.04e7
+polyline n_points 2
+0,1
+0,0
+bspline
+2,2,2,2,0
+0,0,1,1
+0,0,1,1
+-3.2,0.4,0.4
+-3.2,-0.4,0.4
+3.2,0.4,0.4
+3.2,-0.4,0.4
+define_surface name srf.05 family BOUNDARY tetra_size 1e+10
+trim_surface n_loops 1
+loop n_curves 5
+coedge 3dcurve   srf.03e1
+polyline n_points 2
+0,0
+1,0
+coedge 3dcurve   srf.05e9
+polyline n_points 2
+1,0
+1,1
+coedge 3dcurve - srf.04e5
+polyline n_points 2
+1,1
+0,1
+coedge 3dcurve   srf.05e11.2
+polyline n_points 2
+0,1
+0,0.19999999552965
+coedge 3dcurve   srf.05e11.3
+polyline n_points 2
+0,0.19999999552965
+0,0
+bspline
+2,2,2,2,0
+0,0,1,1
+0,0,1,1
+-3.2,-0.4,0
+3.2,-0.4,0
+-3.2,-0.4,0.4
+3.2,-0.4,0.4
+define_surface name srf.06 family BOUNDARY tetra_size 1e+10
+trim_surface n_loops 1
+loop n_curves 4
+coedge 3dcurve - srf.03e3
+polyline n_points 2
+0,0
+1,0
+coedge 3dcurve   srf.06e13
+polyline n_points 2
+1,0
+1,1
+coedge 3dcurve   srf.04e7
+polyline n_points 2
+1,1
+0,1
+coedge 3dcurve   srf.06e15
+polyline n_points 2
+0,1
+0,0
+bspline
+2,2,2,2,0
+0,0,1,1
+0,0,1,1
+-3.2,0.4,0
+3.2,0.4,0
+-3.2,0.4,0.4
+3.2,0.4,0.4
+define_surface name srf.07 family INLET tetra_size 1e+10
+trim_surface n_loops 1
+loop n_curves 5
+coedge 3dcurve   srf.03e0
+polyline n_points 2
+0,0
+1,0
+coedge 3dcurve - srf.05e11.3
+polyline n_points 2
+1,0
+1,0.19999999552965
+coedge 3dcurve - srf.05e11.2
+polyline n_points 2
+1,0.19999999552965
+1,1
+coedge 3dcurve - srf.04e4
+polyline n_points 2
+1,1
+0,1
+coedge 3dcurve   srf.06e15
+polyline n_points 2
+0,1
+0,0
+bspline
+2,2,2,2,0
+0,0,1,1
+0,0,1,1
+-3.2,0.4,0
+-3.2,-0.4,0
+-3.2,0.4,0.4
+-3.2,-0.4,0.4
+define_surface name srf.08 family OUTLET tetra_size 1e+10
+trim_surface n_loops 1
+loop n_curves 4
+coedge 3dcurve - srf.03e2
+polyline n_points 2
+0,0
+1,0
+coedge 3dcurve   srf.05e9
+polyline n_points 2
+1,0
+1,1
+coedge 3dcurve   srf.04e6
+polyline n_points 2
+1,1
+0,1
+coedge 3dcurve - srf.06e13
+polyline n_points 2
+0,1
+0,0
+bspline
+2,2,2,2,0
+0,0,1,1
+0,0,1,1
+3.2,0.4,0
+3.2,-0.4,0
+3.2,0.4,0.4
+3.2,-0.4,0.4
+affix 0
+define_model 0.02 reference_size 1
+return

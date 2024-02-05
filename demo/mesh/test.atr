@@ -1,0 +1,31 @@
+# Written by ICEM CFD 21.1, user Li Hang, Sun Dec 10 21:59:52 China Standard Time 2023
+
+begin family GEOM
+    begin solver "ANSYS Fluent"
+    end solver "ANSYS Fluent"
+end family GEOM
+
+begin family INLET
+    begin solver "ANSYS Fluent"
+    end solver "ANSYS Fluent"
+end family INLET
+
+begin family OUTLET
+    begin solver "ANSYS Fluent"
+    end solver "ANSYS Fluent"
+end family OUTLET
+
+begin family GROUND
+    begin solver "ANSYS Fluent"
+    end solver "ANSYS Fluent"
+end family GROUND
+
+begin family BOUNDARY
+    begin solver "ANSYS Fluent"
+    end solver "ANSYS Fluent"
+end family BOUNDARY
+
+begin family WIND
+    begin solver "ANSYS Fluent"
+    end solver "ANSYS Fluent"
+end family WIND

@@ -1,0 +1,9 @@
+# family_boco file written by ICEM CFD by Li Hang on Fri Dec 15 13:31:35 China Standard Time 2023
+## solver ANSYS Fluent
+"GEOM"
+"INLET"
+"OUTLET"
+"GROUND"
+"BOUNDARY"
+"WIND"
+
