@@ -9,12 +9,14 @@ import numpy as np
 from ansys.api.fluent.v0 import field_data_pb2 as FieldDataProtoModule
 from ansys.api.fluent.v0 import svar_pb2 as SvarProtoModule
 from ansys.api.fluent.v0 import svar_pb2_grpc as SvarGrpcModule
-from ansys.fluent.core.services.error_handler import catch_grpc_error
 from ansys.fluent.core.services.field_data import (
     _FieldDataConstants,
     override_help_text,
 )
-from ansys.fluent.core.services.interceptors import TracingInterceptor
+from ansys.fluent.core.services.interceptors import (
+    GrpcErrorInterceptor,
+    TracingInterceptor,
+)
 from ansys.fluent.core.solver.error_message import allowed_name_error_message
 
 
@@ -23,27 +25,26 @@ class SVARService:
 
     def __init__(self, channel: grpc.Channel, metadata):
         """__init__ method of SVAR service class."""
-        tracing_interceptor = TracingInterceptor()
-        intercept_channel = grpc.intercept_channel(channel, tracing_interceptor)
+        intercept_channel = grpc.intercept_channel(
+            channel,
+            GrpcErrorInterceptor(),
+            TracingInterceptor(),
+        )
         self.__stub = SvarGrpcModule.svarStub(intercept_channel)
         self.__metadata = metadata
 
-    @catch_grpc_error
     def get_svar_data(self, request):
         """GetSvarData RPC of SVAR service."""
         return self.__stub.GetSvarData(request, metadata=self.__metadata)
 
-    @catch_grpc_error
     def set_svar_data(self, request):
         """SetSvarData RPC of SVAR service."""
         return self.__stub.SetSvarData(request, metadata=self.__metadata)
 
-    @catch_grpc_error
     def get_svars_info(self, request):
         """GetSvarsInfo RPC of SVAR service."""
         return self.__stub.GetSvarsInfo(request, metadata=self.__metadata)
 
-    @catch_grpc_error
     def get_zones_info(self, request):
         """GetZonesInfo RPC of SVAR service."""
         return self.__stub.GetZonesInfo(request, metadata=self.__metadata)
@@ -435,11 +436,12 @@ class SVARData:
         self._service = service
         self._svar_info = svar_info
 
-        self._allowed_zone_names = _AllowedZoneNames(svar_info)
+    def _update_svar_info(self):
+        self._allowed_zone_names = _AllowedZoneNames(self._svar_info)
 
-        self._allowed_domain_names = _AllowedDomainNames(svar_info)
+        self._allowed_domain_names = _AllowedDomainNames(self._svar_info)
 
-        self._allowed_svar_names = _AllowedSvarNames(svar_info)
+        self._allowed_svar_names = _AllowedSvarNames(self._svar_info)
         svar_args = dict(
             zone_names=self._allowed_zone_names, svar_name=self._allowed_svar_names
         )
@@ -449,7 +451,7 @@ class SVARData:
                 svar_accessor=self.get_svar_data,
                 args_allowed_values_accessors=svar_args,
             ),
-            self.get_svar_data,
+            SVARData.get_svar_data,
         )
 
     def get_array(
@@ -459,6 +461,7 @@ class SVARData:
 
         This array can be populated  with values to set SVAR data.
         """
+        self._update_svar_info()
 
         zones_info = self._svar_info.get_zones_info()
         if zone_name in zones_info.zones:
@@ -493,6 +496,7 @@ class SVARData:
         SVARData.Data
             Object containing SVAR data.
         """
+        self._update_svar_info()
         svars_request = SvarProtoModule.GetSvarDataRequest(
             provideBytesStream=_FieldDataConstants.bytes_stream,
             chunkSize=_FieldDataConstants.chunk_size,
@@ -534,6 +538,7 @@ class SVARData:
         -------
         None
         """
+        self._update_svar_info()
         domain_id = self._allowed_domain_names.valid_name(domain_name)
         zone_ids_to_svar_data = {
             self._allowed_zone_names.valid_name(zone_name): svar_data
